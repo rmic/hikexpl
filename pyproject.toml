@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "hikexpl"
+version = "0.1.2"
+description = "A CLI tool to check if a given URL list is vulnerable to CVE-2017-7921"
+authors = ["Raphael Michel <raph.mic@gmail.com>"]
+license = "MIT"
+
+packages = [
+    { include= "*", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+typer = "^0.12.1"
+rich = "^13.7.1"
+pyyaml = "^6.0.1"
+shodan = "^1.31.0"
+torpy = "^1.1.6"
+cryptography = "^42.0.5"
+
+[tool.poetry.scripts]
+hikexpl = "hikexpl.cli:app"
+
+[[tool.poetry.source]]
+name = "default"
+url = 'https://pypi.python.org/simple'
+default = true
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+twine = "^4.0.2"
+poetry = "^1.8.2"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
