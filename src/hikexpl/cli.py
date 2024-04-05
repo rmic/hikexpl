@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("hikexpl")
 logger.setLevel(logging.INFO)
 app = typer.Typer()
-__version__ = "0.1.0"
+__version__ = "0.1.3"
 
 DEFAULT_DORK = "3.1.3.150324"
 @app.command()
