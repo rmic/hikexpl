@@ -1,4 +1,4 @@
-#hikexpl: Exploiting Hikvision Backdoor (CVE-2017-7921)
+# hikexpl: Exploiting Hikvision Backdoor (CVE-2017-7921)
 
 ## Overview
 This Python script, named hikexpl, is designed as a poc to demonstrate the the Hikvision backdoor vulnerability, CVE-2017-7921. 
