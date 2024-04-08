@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hikexpl"
-version = "0.1.3"
+version = "0.1.6"
 description = "A CLI tool to check if a given URL list is vulnerable to CVE-2017-7921"
 authors = ["Raphael Michel <raph.mic@gmail.com>"]
 license = "MIT"
